@@ -1,0 +1,39 @@
+version: "3.5"
+
+services:
+  npm-app:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    environment:
+      - DB_MYSQL_HOST=npm-db
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=npm
+      - DB_MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - DB_MYSQL_NAME=npm
+    volumes:
+      - ${DATA_PATH}:/data
+      - ${SSL_PATH}:/etc/letsencrypt
+    networks:
+      - npm-network
+
+  npm-db:
+    image: jc21/mariadb-aria:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=npm
+      - MYSQL_USER=npm
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ${MYSQL_VOLUME_PATH}:/var/lib/mysql
+    networks:
+      - npm-network
+      
+networks:
+  npm-network:
+    name: npm-network
+    driver: bridge
