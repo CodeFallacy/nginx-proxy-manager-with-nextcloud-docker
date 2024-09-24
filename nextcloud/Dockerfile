@@ -5,6 +5,9 @@ FROM nextcloud:latest
 # Update package lists
 RUN apt-get update
 
+# Upgrade package lists
+RUN apt-get upgrade -y
+
 # Install ffmpeg
 RUN apt-get install -y ffmpeg
 
